@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace ArcadeFlyer2D
 {
@@ -9,6 +10,8 @@ namespace ArcadeFlyer2D
         private ArcadeFlyerGame root;
         private Vector2 position; 
         private Texture2D spriteImage;
+        private float movementSpeed = 4.0f;
+
 
         public float SpriteHeight{
             get{
@@ -34,14 +37,33 @@ namespace ArcadeFlyer2D
 
         public void LoadContent(){
             this.spriteImage = root.Content.Load<Texture2D>("MainChar");
-
         }
 
         public void update(GameTime gameTime){
-
+            KeyboardState currentKeyboardState = Keyboard.GetState();
+            HandleInput(currentKeyboardState);
         }
 
-        public void draw(GameTime gameTime, SpriteBatch spriteBatch){
+        private void HandleInput(KeyboardState currentKeybordState){
+            bool wKeyPressed = currentKeybordState.IsKeyDown(Keys.W);
+            if(wKeyPressed){
+                position.Y -= movementSpeed;
+            }
+            bool sKeyPressed = currentKeybordState.IsKeyDown(Keys.S);
+            if(sKeyPressed){
+                position.Y += movementSpeed;
+            }
+            bool aKeyPressed = currentKeybordState.IsKeyDown(Keys.A);
+            if(aKeyPressed){
+                position.X -= movementSpeed;
+            }
+            bool dKeyPressed = currentKeybordState.IsKeyDown(Keys.D);
+            if(dKeyPressed){
+                position.X += movementSpeed;
+            }
+        }
+
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch){
             spriteBatch.Draw(spriteImage, PostionRectangle, Color.White);
         }
     }
