@@ -2,9 +2,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace ArcadeFlyer2D{
-    class player2{
-        public Player2()
+namespace ArcadeFlyer2D
+{
+    class player2
+    {
+        public player2
         {
             private float spriteWidth;
             private ArcadeFlyerGame root;
@@ -29,9 +31,37 @@ namespace ArcadeFlyer2D{
             
             
 
-            public player2(){
+            public player2(ArcadeFlyerGame root, Vector2 position)
+            {
+                this.root = root;
+                this.position = position;
+                this.spriteWidth = 128.0f;
+                this.velocity = new Vector2(-1.0f, 5.0f);
 
+                LoadContent();
             }
+
+            public void LoadContent()
+            {
+                this.spriteImage = root.Content.Load<Texture2D>("New Piskel");
+            }
+
+            public void Update(GameTime gameTime)
+            {
+                position += velocity;
+
+                if (position.Y < 0 || position.Y > (root.ScreenHeight - SpriteHeight))
+                {
+                    velocity.Y *= -1;
+                }
+            }
+
+            public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+            {
+                spriteBatch.Draw(spriteImage, PositionRectangle, Color.White);
+            }
+
+
         }
     }
 }
