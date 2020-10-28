@@ -19,7 +19,7 @@ namespace ArcadeFlyer2D
         private Enemy enemy;
 
         // Screen width
-        private int screenWidth = 1600;
+        private int screenWidth = 1000;
         public int ScreenWidth
         {
             get { return screenWidth; }
@@ -27,7 +27,7 @@ namespace ArcadeFlyer2D
         }
 
         // Screen height
-        private int screenHeight = 900;
+        private int screenHeight = 600;
         public int ScreenHeight
         {
             get { return screenHeight; }
