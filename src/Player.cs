@@ -13,14 +13,7 @@ namespace ArcadeFlyer2D
         // The speed at which the player can move
         private float movementSpeed = 4.0f;
 
-        // The amount of time before the player can fire another projectile (in seconds)
-        private float projectileCoolDownTime = 0.5f;
-
-        // A timer for the projectile cool down
-        private float projectileTimer = 0.0f;
-
-        // Is the player currently cooling down?
-        private bool projectileTimerActive = false;
+        private Timer cooldownTimer;
 
         // Initialize a player
         public Player(ArcadeFlyerGame root, Vector2 position) : base(position)
@@ -29,6 +22,8 @@ namespace ArcadeFlyer2D
             this.root = root;
             this.position = position;
             this.SpriteWidth = 128.0f;
+
+            cooldownTimer = new Timer(0.5f);
 
             // Load the content for the player
             LoadContent();
@@ -45,73 +40,59 @@ namespace ArcadeFlyer2D
         private void HandleInput(KeyboardState currentKeyboardState)
         {
             // Get all the key states
-            bool upKeyPressed = currentKeyboardState.IsKeyDown(Keys.Up);
-            bool downKeyPressed = currentKeyboardState.IsKeyDown(Keys.Down);
-            bool leftKeyPressed = currentKeyboardState.IsKeyDown(Keys.Left);
-            bool rightKeyPressed = currentKeyboardState.IsKeyDown(Keys.Right);
+            bool upKeyPressed = currentKeyboardState.IsKeyDown(Keys.W);
+            bool downKeyPressed = currentKeyboardState.IsKeyDown(Keys.S);
+            bool leftKeyPressed = currentKeyboardState.IsKeyDown(Keys.A);
+            bool rightKeyPressed = currentKeyboardState.IsKeyDown(Keys.D);
+            bool spaceKeyPressed = currentKeyboardState.IsKeyDown(Keys.Space);
 
             // If Up is pressed, decrease position Y
             if (upKeyPressed)
             {
                 position.Y -= movementSpeed;
             }
-            
+
             // If Down is pressed, increase position Y
             if (downKeyPressed)
             {
                 position.Y += movementSpeed;
             }
-            
+
             // If Left is pressed, decrease position X
             if (leftKeyPressed)
             {
                 position.X -= movementSpeed;
             }
-            
+
             // If Right is pressed, increase position X
             if (rightKeyPressed)
             {
                 position.X += movementSpeed;
             }
+
+            //If Space is pressed, shoot
+            if (spaceKeyPressed && !cooldownTimer.Active)
+            {
+                Vector2 projectialPosition;
+                Vector2 projectileVelocity;
+
+                projectialPosition = new Vector2(position.X + (SpriteWidth / 2), position.Y + (SpriteHeight / 2));
+                projectileVelocity = new Vector2(10.0f, 0.0f);
+                root.FireProjectile(projectialPosition, projectileVelocity, "player");
+                cooldownTimer.StartTimer();
+            }
         }
 
         // Called each frame
         public void Update(GameTime gameTime)
-        {   
+        {
             // Get current keyboard state
             KeyboardState currentKeyboardState = Keyboard.GetState();
 
             // Handle any movement input
             HandleInput(currentKeyboardState);
 
-            // If able to fire projectiles and Space is pressed...
-            if (!projectileTimerActive && currentKeyboardState.IsKeyDown(Keys.Space))
-            {
-                // Generate the projectile information
-                Vector2 projectilePosition = new Vector2(position.X + SpriteWidth, position.Y + SpriteHeight / 2);
-                Vector2 projectileVelocity = new Vector2(10.0f, 0.0f);
-
-                // Fire the projectile from the main game
-                root.FireProjectile(projectilePosition, projectileVelocity);
-
-                // Start the cool down process
-                projectileTimerActive = true;
-                projectileTimer = 0.0f;
-            }
-
-            // If the player is currently cooling down...
-            if (projectileTimerActive)
-            {
-                // Increment the timer
-                projectileTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-                // If all the time has elapsed...
-                if (projectileTimer >= projectileCoolDownTime)
-                {
-                    // Done cooling down!
-                    projectileTimerActive = false;
-                }
-            }
+            cooldownTimer.Update(gameTime);
         }
     }
 }

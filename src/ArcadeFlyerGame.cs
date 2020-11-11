@@ -24,9 +24,10 @@ namespace ArcadeFlyer2D
 
         // Projectile image for player
         private Texture2D playerProjectileSprite;
+        private Texture2D enemyProjectileSprite;
 
         // Screen width
-        private int screenWidth = 1600;
+        private int screenWidth = 1000;
         public int ScreenWidth
         {
             get { return screenWidth; }
@@ -34,13 +35,13 @@ namespace ArcadeFlyer2D
         }
 
         // Screen height
-        private int screenHeight = 900;
+        private int screenHeight = 700;
         public int ScreenHeight
         {
             get { return screenHeight; }
             private set { screenHeight = value; }
         }
-        
+
         // Initalized the game
         public ArcadeFlyerGame()
         {
@@ -60,7 +61,7 @@ namespace ArcadeFlyer2D
 
             // Initialize the player to be in the top left
             player = new Player(this, new Vector2(0.0f, 0.0f));
-            
+
             // Initialize an enemy to be on the right side
             enemy = new Enemy(this, new Vector2(screenWidth, 0));
 
@@ -82,11 +83,12 @@ namespace ArcadeFlyer2D
 
             // Load in textures
             playerProjectileSprite = Content.Load<Texture2D>("PlayerFire");
+            enemyProjectileSprite = Content.Load<Texture2D>("enemyBullet");
         }
 
         // Called every frame
         protected override void Update(GameTime gameTime)
-        {   
+        {
             // Update base game
             base.Update(gameTime);
 
@@ -125,13 +127,18 @@ namespace ArcadeFlyer2D
         }
 
         // Fires a projectile with the given position and velocity
-        public void FireProjectile(Vector2 position, Vector2 velocity)
-        {
-            // Create the new projectile
-            Projectile firedProjectile = new Projectile(position, velocity, playerProjectileSprite);
+        public void FireProjectile(Vector2 position, Vector2 velocity, string projectileType)
+        {  
+            Texture2D projectileTexture;
 
-            // Add the projectile to the list
-            projectiles.Add(firedProjectile);
+            if(projectileType == "enemy"){
+                projectileTexture = enemyProjectileSprite;
+            }
+            else{
+                projectileTexture = playerProjectileSprite;
+            }
+            Projectile fireProjectile = new Projectile(position, velocity, projectileTexture);
+            projectiles.Add(fireProjectile);
         }
     }
 }
