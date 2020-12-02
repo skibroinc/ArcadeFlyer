@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace ArcadeFlyer2D
 {
@@ -43,6 +44,10 @@ namespace ArcadeFlyer2D
         private SpriteFont textfont;
 
         private int shotsFired = 0;
+
+        private int totalAmmo = 50;
+
+        private int ammoInClip = 5;
 
         private int totalShotsFired;
 
@@ -122,6 +127,17 @@ namespace ArcadeFlyer2D
             // Update base game
             base.Update(gameTime);
 
+            //exit if ammo is 0
+            if(totalAmmo == 0){
+                gameOver = true;
+                return;
+            }
+
+            //checks ammo in clip
+            if(ammoInClip == 0){
+                Thread.Sleep(2000);
+                ammoInClip = 5;
+            }
 
             //exit early if game over
             if(gameOver){
@@ -221,8 +237,12 @@ namespace ArcadeFlyer2D
 
             string scoreString = "Score: " + score.ToString();
             string livesString = "Lives: " + life.ToString();
+            string ammo = totalAmmo.ToString();
+            string clip = ammoInClip.ToString();
             spriteBatch.DrawString(textfont, scoreString, Vector2.Zero, Color.Black);
             spriteBatch.DrawString(textfont, livesString, new Vector2(0f, 20f), Color.Black);
+            spriteBatch.DrawString(textfont, "Ammo: " + ammo, new Vector2(0f, 40f), Color.Black);
+            spriteBatch.DrawString(textfont, "Ammo in clip: " + clip, new Vector2(0f, 60f), Color.Black);
 
             if(gameOver){
                 totalShotsFired = shotsFired;
@@ -257,6 +277,8 @@ namespace ArcadeFlyer2D
 
             //adds the shots fired
             shotsFired += 1;
+            totalAmmo -= 1;
+            ammoInClip -= 1;
 
             // Add the projectile to the list
             projectiles.Add(firedProjectile);
