@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -144,25 +144,6 @@ namespace ArcadeFlyer2D
 
             // End batch draw
             spriteBatch.End();
-        }
-
-        // Check for collisions between bounding rectangles
-        private bool getCollision(Rectangle spriteBounds1, Rectangle spriteBounds2)
-        {
-            // Get the center points
-            Point sprite1Center = spriteBounds1.Center;
-            Point sprite2Center = spriteBounds2.Center;
-
-            // Get the distances between the rectangle centers
-            float xDistance = Math.Abs(sprite1Center.X - sprite2Center.X);
-            float yDistance = Math.Abs(sprite1Center.Y - sprite2Center.Y);
-
-            // Get the distances required for collision across each axis
-            float collisionDistanceX = (spriteBounds1.Width / 2) + (spriteBounds2.Width / 2);
-            float collisionDistanceY = (spriteBounds1.Height / 2) + (spriteBounds2.Height / 2);
-
-            // Check for overlap on BOTH axes
-            return xDistance <= collisionDistanceX && yDistance <= collisionDistanceY;
         }
 
         // Fires a projectile with the given position and velocity
