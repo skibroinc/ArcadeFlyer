@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace ArcadeFlyer2D
 {
@@ -18,6 +19,8 @@ namespace ArcadeFlyer2D
         // Initialize an enemy
         public Enemy(ArcadeFlyerGame root, Vector2 position) : base(position)
         {
+            Random rand = new Random(); 
+            
             // Initialize values
             this.root = root;
             this.position = position;

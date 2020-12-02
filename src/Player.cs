@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace ArcadeFlyer2D
 {
@@ -40,10 +41,10 @@ namespace ArcadeFlyer2D
         private void HandleInput(KeyboardState currentKeyboardState)
         {
             // Get all the key states
-            bool upKeyPressed = currentKeyboardState.IsKeyDown(Keys.Up);
-            bool downKeyPressed = currentKeyboardState.IsKeyDown(Keys.Down);
-            bool leftKeyPressed = currentKeyboardState.IsKeyDown(Keys.Left);
-            bool rightKeyPressed = currentKeyboardState.IsKeyDown(Keys.Right);
+            bool upKeyPressed = currentKeyboardState.IsKeyDown(Keys.W);
+            bool downKeyPressed = currentKeyboardState.IsKeyDown(Keys.S);
+            bool leftKeyPressed = currentKeyboardState.IsKeyDown(Keys.A);
+            bool rightKeyPressed = currentKeyboardState.IsKeyDown(Keys.D);
 
             // If Up is pressed, decrease position Y
             if (upKeyPressed)
@@ -68,16 +69,6 @@ namespace ArcadeFlyer2D
             {
                 position.X += movementSpeed;
             }
-        }
-
-        // Called each frame
-        public void Update(GameTime gameTime)
-        {   
-            // Get current keyboard state
-            KeyboardState currentKeyboardState = Keyboard.GetState();
-
-            // Handle any movement input
-            HandleInput(currentKeyboardState);
 
             // If able to fire projectiles and Space is pressed...
             if (!projectileCoolDown.Active && currentKeyboardState.IsKeyDown(Keys.Space))
@@ -92,6 +83,16 @@ namespace ArcadeFlyer2D
                 // Start the cool down process
                 projectileCoolDown.StartTimer();
             }
+        }
+
+        // Called each frame
+        public void Update(GameTime gameTime)
+        {   
+            // Get current keyboard state
+            KeyboardState currentKeyboardState = Keyboard.GetState();
+
+            // Handle any movement input
+            HandleInput(currentKeyboardState);
             
             // Update the cool down timer
             projectileCoolDown.Update(gameTime);
