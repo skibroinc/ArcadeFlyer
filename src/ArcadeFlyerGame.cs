@@ -18,6 +18,8 @@ namespace ArcadeFlyer2D
         // The player
         private Player player;
 
+        private PowerUp powerUp;
+
         //number of lives
         private int life = 3;
 
@@ -37,6 +39,9 @@ namespace ArcadeFlyer2D
 
         // Projectile image for enemy
         private Texture2D enemyProjectileSprite;
+
+        //projectile image for power up
+        private Texture2D powerUpProjectileSprite;
         
         public bool gameOver = false;
 
@@ -48,7 +53,7 @@ namespace ArcadeFlyer2D
         private int totalAmmo = 50;
 
         private int ammoInClip = 5;
-
+        
         private int totalShotsFired;
 
         // Screen width
@@ -70,6 +75,7 @@ namespace ArcadeFlyer2D
         // Initalized the game
         public ArcadeFlyerGame()
         {
+
             // Get the graphics
             graphics = new GraphicsDeviceManager(this);
 
@@ -89,6 +95,9 @@ namespace ArcadeFlyer2D
 
             // Initialize empty list of enemies
             enemies = new List<Enemy>();
+
+            // Initialize the power up to be on the left of the screen
+            powerUp = new PowerUp(this, new Vector2(0.0f, 0.0f));
             
             // Add an enemy to be on the right side
             enemies.Add(new Enemy(this, new Vector2(screenWidth, 0)));
@@ -116,6 +125,7 @@ namespace ArcadeFlyer2D
             // Load in textures
             playerProjectileSprite = Content.Load<Texture2D>("PlayerFire");
             enemyProjectileSprite = Content.Load<Texture2D>("EnemyFire");
+            powerUpProjectileSprite = Content.Load<Texture2D>("powerUpBulletFaceLeft");
         
             textfont = Content.Load<SpriteFont>("text");
         }
@@ -135,7 +145,6 @@ namespace ArcadeFlyer2D
 
             //checks ammo in clip
             if(ammoInClip == 0){
-                Thread.Sleep(2000);
                 ammoInClip = 5;
             }
 
@@ -152,6 +161,8 @@ namespace ArcadeFlyer2D
                 enemy.Update(gameTime);
             }
 
+            
+
             // Loop through projectiles backwards (in order to remove projectiles as needed)
             for (int i = projectiles.Count - 1; i >= 0; i--)
             {
@@ -167,6 +178,7 @@ namespace ArcadeFlyer2D
                 {
                     // There is a collision with the player, remove the projectile
                     projectiles.Remove(p);
+                    //add if else statement for the power up projectile
                     life = life - 1;
                     if(life == 0){
                         gameOver = true;
@@ -185,7 +197,7 @@ namespace ArcadeFlyer2D
                             // There is a collision with the enemy, remove the projectile
                             projectiles.Remove(p);
 
-                            score = score + 1000;
+                            score = score + 1;
 
                             // Remove the enemy as well
                             enemies.Remove(enemy);
@@ -193,7 +205,7 @@ namespace ArcadeFlyer2D
                     }
                 }
             }
-
+            
             // Enemy creation timer is up
             if (!enemyCreationTimer.Active)
             {
@@ -265,6 +277,12 @@ namespace ArcadeFlyer2D
             {
                 // This is a projectile sent from the player, set it to the proper sprite
                 projectileImage = playerProjectileSprite;
+                shotsFired += 1;
+                totalAmmo -= 1;
+                ammoInClip -= 1;
+            }
+            else if(projectileType == projectileType.PowerUp){
+                projectileImage = powerUpProjectileSprite;
             }
             else
             {
@@ -273,12 +291,7 @@ namespace ArcadeFlyer2D
             }
 
             // Create the new projectile
-            Projectile firedProjectile = new Projectile(position, velocity, projectileImage, projectileType);
-
-            //adds the shots fired
-            shotsFired += 1;
-            totalAmmo -= 1;
-            ammoInClip -= 1;
+            Projectile firedProjectile = new Projectile(position, velocity, projectileImage, projectileType);            
 
             // Add the projectile to the list
             projectiles.Add(firedProjectile);

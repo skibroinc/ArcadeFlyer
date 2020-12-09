@@ -17,6 +17,10 @@ namespace ArcadeFlyer2D
         // Cool down timer for projectiles
         private Timer projectileCoolDown;
 
+        private Timer reload;
+
+        private int ammo = 0;
+
         // Initialize a player
         public Player(ArcadeFlyerGame root, Vector2 position) : base(position)
         {
@@ -25,6 +29,7 @@ namespace ArcadeFlyer2D
             this.position = position;
             this.SpriteWidth = 128.0f;
             this.projectileCoolDown = new Timer(0.5f);
+            this.reload = new Timer(2.0f);
 
             // Load the content for the player
             LoadContent();
@@ -71,18 +76,27 @@ namespace ArcadeFlyer2D
             }
 
             // If able to fire projectiles and Space is pressed...
-            if (!projectileCoolDown.Active && currentKeyboardState.IsKeyDown(Keys.Space))
-            {
-                // Generate the projectile information
-                Vector2 projectilePosition = new Vector2(position.X + SpriteWidth, position.Y + SpriteHeight / 2);
-                Vector2 projectileVelocity = new Vector2(10.0f, 0.0f);
+            if(!reload.Active){
+                if (!projectileCoolDown.Active && currentKeyboardState.IsKeyDown(Keys.Space))
+                {
+                    // Generate the projectile information
+                    Vector2 projectilePosition = new Vector2(position.X + SpriteWidth, position.Y + SpriteHeight / 2);
+                    Vector2 projectileVelocity = new Vector2(10.0f, 0.0f);
 
-                // Fire the projectile from the main game
-                root.FireProjectile(projectilePosition, projectileVelocity, ProjectileType.Player);
+                    // Fire the projectile from the main game
+                    root.FireProjectile(projectilePosition, projectileVelocity, ProjectileType.Player);
 
-                // Start the cool down process
-                projectileCoolDown.StartTimer();
+                    // Start the cool down process
+                    projectileCoolDown.StartTimer();
+
+                    ammo ++;
+
+                    if(ammo % 5 == 0){
+                        reload.StartTimer();
+                    }
+                }
             }
+            
         }
 
         // Called each frame
@@ -96,6 +110,8 @@ namespace ArcadeFlyer2D
             
             // Update the cool down timer
             projectileCoolDown.Update(gameTime);
+
+            reload.Update(gameTime);
         }
     }
 }
